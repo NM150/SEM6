@@ -20,34 +20,25 @@ exit
 - SLIP : ACT That block ICMP Traffic
 ```
 ipv6 access-list achilles
-deny icmp any host <ipv6 address of server>
-permit any any
+ deny icmp any host <server-ipv6>
+ permit ipv6 any any
 exit
 
-interface <interface name>
-ipv6 traffic-filter achilles in
+interface <interface-name>
+ ipv6 traffic-filter achilles in
 exit
 
 ```
-- SLIP : ACLthe will permit FTP and HTTP access on R1
-- PC1 FTP 
+- SLIP : ACL that will permit FTP and HTTP access on R1
+- PC1 FTP , PC2 HTTP
 ```
-access-list achilles
-permit tcp host <PC1 IP> host <Server IP> eq ftp
-interface <interface Name>
-ip traffic-filter achilles in 
-!!!OR USE THIS!!! 
-ip access-group achilles in
+access-list 110 permit tcp host <PC1-IP> host <Server-IP> eq ftp
+access-list 110 permit tcp host <PC2-IP> host <Server-IP> eq www
+access-list 110 deny ip any any
 
-```
-- PC2 HTTP
-```
-access-list achilles
-permit tcp host <PC2 IP> host <Server IP> eq www
-interface <interface name>
-ip traffic-filter achilles in 
-!!!OR USE THIS!!! 
-ip access-group achilles in
+interface <interface-name>
+ ip access-group 110 in
+exit
 
 ```
 
@@ -55,7 +46,6 @@ SLIP : permit one LAN will permit one LAN to remotely access a device in another
 
 
 ```
-
 access-list 110 permit tcp 10.101.117.48 0.0.0.3 10.101.117.32 0.0.0.3 eq 22
 access-list 110 permit icmp any any
 access-list 110 deny ip any any
